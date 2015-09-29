@@ -7,14 +7,14 @@ This fork is adding a few features and correcting a few bugs to the original Cut
 - Automatic opening of device at startup
 - New shortcuts
 
-Version is 0.23.0
+Version is 0.23.0, forked from 0.22.0
 
 Antoine Calando
 
-## Original Readme:
+### Original Readme:
 
-### CuteCom 0.22.0, June 27th, 2009
-
+> CuteCom 0.22.0, June 27th, 2009
+>
 > CuteCom is a graphical serial terminal, similar to minicom.
 > It is aimed mainly at hardware developers or other people
 > who need a terminal to talk to their devices.
