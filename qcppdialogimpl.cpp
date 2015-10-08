@@ -767,25 +767,34 @@ void QCPPDialogImpl::nextCmd()
 
 void QCPPDialogImpl::execCmd()
 {
-   m_cmdBufIndex=0;
-   QString cmd=m_cmdLe->text().trimmed();
+   m_cmdBufIndex = 0;
+   QString cmd = m_cmdLe->text().trimmed();
    m_cmdLe->clear();
    if (!cmd.isEmpty())
    {
-      if ((m_oldCmdsLb->count()<1) || (m_oldCmdsLb->item(m_oldCmdsLb->count()-1)->text()!=cmd))
+      bool found = false;
+      QList<QListWidgetItem *> list = m_oldCmdsLb->findItems(cmd, 0);
+      foreach(QListWidgetItem * item, list)
       {
-         m_oldCmdsLb->addItem(cmd);
-         m_oldCmdsLb->setCurrentRow(m_oldCmdsLb->count()-1);
-         if (m_oldCmdsLb->count()>50)
-         {
-#if QT_VERSION >= 0x040300
-            m_oldCmdsLb->removeItemWidget(m_oldCmdsLb->item(0));
-#else /* QT_VERSION >= 0x030000 */
-            m_oldCmdsLb->setItemWidget(m_oldCmdsLb->item(0), 0);
-#endif /* QT_VERSION >= 0x030000 */
-         }
-         saveSettings();
+         item = m_oldCmdsLb->takeItem(m_oldCmdsLb->row(item));
+         delete item;
+         found = true;
       }
+
+      m_oldCmdsLb->addItem(cmd);
+      m_oldCmdsLb->setCurrentRow(m_oldCmdsLb->count()-1);
+      if (m_oldCmdsLb->count()>50)
+      {
+#if QT_VERSION >= 0x040300
+         m_oldCmdsLb->removeItemWidget(m_oldCmdsLb->item(0));
+#else /* QT_VERSION >= 0x030000 */
+         m_oldCmdsLb->setItemWidget(m_oldCmdsLb->item(0), 0);
+#endif /* QT_VERSION >= 0x030000 */
+      }
+
+      // Do not save settings if there is no new string
+      if (!found)
+         saveSettings();
    }
    m_oldCmdsLb->clearSelection();
    if (m_fd==-1)
