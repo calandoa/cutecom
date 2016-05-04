@@ -32,7 +32,8 @@
 #include <QEvent>
 #include <QWidget>
 
-#define CUTECOMM_BUFSIZE (4096)
+#define CUTECOMM_BUFSIZE 4096
+#define CUTECOMM_LOGSIZE 5000
 
 class QListWidgetItem;
 class QResizeEvent;

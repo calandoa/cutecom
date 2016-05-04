@@ -141,7 +141,7 @@ QCPPDialogImpl::QCPPDialogImpl(QWidget* parent)
 //   connect(m_enableLoggingCb, SIGNAL(toggled(bool)), this, SLOT(enableLogging(bool)));
 
    m_outputView->setWordWrapMode(QTextOption::WrapAnywhere);
-   m_outputView->document()->setMaximumBlockCount(500);
+   m_outputView->document()->setMaximumBlockCount(CUTECOMM_LOGSIZE);
 //  TODO ? m_outputView->setWordWrap(Q3TextEdit::WidgetWidth);
 
 /*   QAccel* accel=new QAccel(this);
@@ -1436,8 +1436,23 @@ void QCPPDialogImpl::doOutput()
    int save_scroll = sb->value();
    int save_max = (save_scroll == sb->maximum());
 
+   // Check selection
+   QTextCursor cursor = m_outputView->textCursor();
+   int start = cursor.anchor();
+   int end = cursor.position();
+   int cnt_pre = m_outputView->document()->characterCount();
+
+   // append() would add spurious LF
    m_outputView->moveCursor (QTextCursor::End);
    m_outputView->insertPlainText (m_outputBuffer);
+
+   // Restore selection
+   if (start != end) {
+      int discarded = cnt_pre + m_outputBuffer.count() - m_outputView->document()->characterCount();
+      cursor.setPosition(start - discarded);
+      cursor.setPosition(end - discarded, QTextCursor::KeepAnchor);
+      m_outputView->setTextCursor(cursor);
+   }
 
    if (save_max)
       sb->setValue(sb->maximum());
